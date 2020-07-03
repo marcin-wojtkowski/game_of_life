@@ -15,14 +15,20 @@ clock = pygame.time.Clock()
 
 pygame.init()
 
+grid2 = np.zeros((rows, columns))
+
 def create_random_grid():
     grid = np.zeros((rows, columns))
-
     for r in range(rows):
         for c in range(columns):
             grid[r][c] = random.randint(0, 1)
 
     return grid
+
+
+
+arg = create_random_grid()
+
 
 def draw_grid(grid):
     for r in range(rows):
@@ -35,11 +41,44 @@ def draw_grid(grid):
     pygame.display.flip()
 
 
+def game_logic(grid):
+    for r in range(1, rows - 1):
+        for c in range(1, columns - 1):
+            total = (
+            grid[r-1][c-1] +
+            grid[r-1][c] +
+            grid[r-1][c+1] +
+
+            grid[r][c-1] +
+            grid[r][c+1] +
+
+            grid[r+1][c-1] +
+            grid[r+1][c] +
+            grid[r+1][c+1] )
+
+
+            if grid[r][c] == 1 and total < 2:
+                grid2[r][c] = 0
+            elif grid[r][c] == 1 and (total == 2 or total == 3):
+                grid2[r][c] = 1
+            elif grid[r][c] == 1 and total > 3:
+                grid2[r][c] = 0
+            elif grid[r][c] == 0 and total == 3:
+                grid2[r][c] = 1
+            else:
+                print('Error with logic')
+
+    return grid2
+
+
+
+
+
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             sys.exit()
 
-    arg = create_random_grid()
     draw_grid(arg)
-    clock.tick(2)
+    arg = game_logic(arg)
+    clock.tick(1)
