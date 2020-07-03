@@ -13,12 +13,13 @@
             and the interface is more of what I need; a cartoony graphic
 
         Learn how to use pygame
+                #successfully drew rect and circle
             -create a 2D array using numpy
             -represent the 2D array graphically using pygame
             -change the cells on the 2D array, randomly at first
 
     Stage 2
-        -implement cell updating between game states 
+        -implement cell updating between game states
         -figure out the conditional logic on changing cells
 
 """
