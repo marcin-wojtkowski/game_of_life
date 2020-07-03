@@ -15,19 +15,19 @@ clock = pygame.time.Clock()
 
 pygame.init()
 
-grid2 = np.zeros((rows, columns))
 
-def create_random_grid():
-    grid = np.zeros((rows, columns))
+def initialize_grids():
+    display = np.zeros((rows, columns))         #the grid that's going to be display
+    buffer = np.zeros((rows, columns))          #the grid that is in memory buffer
+
+    return display, buffer
+
+
+
+def create_random_grid(grid):
     for r in range(rows):
         for c in range(columns):
             grid[r][c] = random.randint(0, 1)
-
-    return grid
-
-
-
-arg = create_random_grid()
 
 
 def draw_grid(grid):
@@ -41,44 +41,61 @@ def draw_grid(grid):
     pygame.display.flip()
 
 
-def game_logic(grid):
+def game_logic(display, buffer):
     for r in range(1, rows - 1):
         for c in range(1, columns - 1):
             total = (
-            grid[r-1][c-1] +
-            grid[r-1][c] +
-            grid[r-1][c+1] +
+            display[r-1][c-1] +
+            display[r-1][c] +
+            display[r-1][c+1] +
 
-            grid[r][c-1] +
-            grid[r][c+1] +
+            display[r][c-1] +
+            display[r][c+1] +
 
-            grid[r+1][c-1] +
-            grid[r+1][c] +
-            grid[r+1][c+1] )
+            display[r+1][c-1] +
+            display[r+1][c] +
+            display[r+1][c+1] )
 
 
-            if grid[r][c] == 1 and total < 2:
-                grid2[r][c] = 0
-            elif grid[r][c] == 1 and (total == 2 or total == 3):
-                grid2[r][c] = 1
-            elif grid[r][c] == 1 and total > 3:
-                grid2[r][c] = 0
-            elif grid[r][c] == 0 and total == 3:
-                grid2[r][c] = 1
+            if display[r][c] == 1:
+                buffer[r][c] = 0
+            elif display[r][c] == 0:
+                buffer[r][c] = 1
             else:
                 print('Error with logic')
 
-    return grid2
+            '''elif display[r][c] == 1 and total == 2:
+                buffer[r][c] = 1
+            elif display[r][c] == 1 and total > 3:
+                buffer[r][c] = 0
+            elif display[r][c] == 0 and total == 3:
+                buffer[r][c] = 1'''
+
+    return buffer
 
 
+def main_loop(display, buffer):
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                sys.exit()
 
 
+        draw_grid(display)
+        buffer = game_logic(display, buffer)
+        display = buffer
+        clock.tick(1)
 
-while True:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            sys.exit()
 
-    draw_grid(arg)
-    arg = game_logic(arg)
-    clock.tick(1)
+display, buffer = initialize_grids()
+create_random_grid(display)
+
+'''
+print(display)
+print(buffer)
+
+print(id(display))
+print(id(buffer))
+'''
+
+main_loop(display, buffer)
